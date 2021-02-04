@@ -1,0 +1,14 @@
+version: '3'
+
+services:
+  visweb:
+    build: ./setup
+    env_file:
+    - ./web-variables.env
+    container_name: visweb
+    volumes:
+      - ./src/:/var/www/html/
+    ports:
+      - "8080:80"
+    stdin_open: true
+    tty: true

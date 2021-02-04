@@ -1,0 +1,6 @@
+{
+  "require": {
+      "mustache/mustache": "~2.7",
+      "guzzlehttp/guzzle": "~6.0"
+ }
+}

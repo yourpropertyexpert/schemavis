@@ -1,0 +1,62 @@
+{{> partials/header}}
+<div class='container'>
+
+{{#dberror}}
+    <p>You need to log in</p>
+
+    <form action="/index.php" method="POST">
+        <label for="server">Server:</label><br>
+        <input type="text" id="server" name="server" value="{{server}}"><br>
+        <label for="username">Username:</label><br>
+        <input type="text" id="username" name="username" value="{{username}}"><br>
+        <label for="password">Password:</label><br>
+        <input type="text" id="password" name="password" value="{{password}}"><br>
+        <input type="submit" value="Submit" class='btn'>
+    </form>
+
+{{/dberror}}
+
+{{#dbOK}}
+    {{#dbname}}
+        <h2>Database: {{dbname}}</h2>
+        <table class="table">
+            <thead>
+                <tr>
+                    <th style="position: sticky; top: 0;">Table</th>
+                    <th style="position: sticky; top: 0;">Field</th>
+                    <th style="position: sticky; top: 0;">Type</th>
+                    <th style="position: sticky; top: 0;">Null</th>
+                    <th style="position: sticky; top: 0;">Key</th>
+                    <th style="position: sticky; top: 0;">Default</th>
+                    <th style="position: sticky; top: 0;">Extra</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                </tr>
+                {{#tables}}
+                    <tr class="table-primary"><td>{{name}}</td><td/><td/><td/><td/><td/><td/></tr>
+                    {{#columns}}
+                    <tr>
+                        <td>-</td>
+                        <td>{{Field}}</td>
+                        <td>{{Type}}</td>
+                        <td>{{Null}}</td>
+                        <td>{{Key}}</td>
+                        <td>{{Default}}</td>
+                        <td>{{Extra}}</td>
+                    </tr>
+                    {{/columns}}
+                {{/tables}}
+            </tbody>
+        </table>
+    {{/dbname}}
+
+    <h2>Choose a{{#dbname}}nother{{/dbname}} database</h2>
+    <ul>
+    {{#databases}}
+        <li><a href=".?database={{.}}">{{.}}</a></li>
+    {{/databases}}
+    </ul>
+{{/dbOK}}
+</div>
