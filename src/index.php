@@ -52,7 +52,7 @@ if ($data["dbOK"]) {
         $stmt->execute();
         $result = $stmt->get_result();
         while ($row = $result->fetch_assoc()) {
-            $thistable=[];
+            $thistable = [];
             $thistable["name"] = $row["Tables_in_$dbname"];
             $thistable["columns"] = [];
             $tablename = $thistable["name"];
@@ -63,13 +63,12 @@ if ($data["dbOK"]) {
             $result2 = $stmt2->get_result();
             $columns = [];
             while ($innerrow = $result2->fetch_assoc()) {
-                $columns[]=$innerrow;
+                $columns[] = $innerrow;
             }
             $thistable["columns"] = $columns;
             $data["tables"][] = $thistable;
         }
     }
-
 }
 
 echo $m->render('index', $data);
