@@ -1,0 +1,51 @@
+kind: pipeline
+name: PHP Quality Tools
+steps:
+- name: PSR12
+  image:  cytopia/phpcs:latest-php7.3
+  commands:
+  - phpcs --standard=PSR1,PSR12 /drone/src
+- name: Embedded Configuration (Magic Numbers)
+  image: dockerizedphp/phpmnd
+  commands:
+  - phpmnd /drone/src --non-zero-exit-on-violation --extensions=default_parameter,condition,operation,return,argument
+- name: CleanCode
+  image: denisura/phpmd
+  commands:
+# Need to grep out "Unexpected token" errors in newer versions of PHP
+# Because the grep exits with error code 0, we have to generate the exit code by parsing the output
+  - phpmd /drone/src text cleancode | grep -v "Unexpected token" > /tmp/result
+  - ROWS=`wc -l < /tmp/result`
+  - cat /tmp/result
+  - if [ $ROWS -gt 1 ] ; then exit 1 ; fi
+- name: CodeSize (Complexity)
+  image: denisura/phpmd
+  commands:
+# Need to grep out "Unexpected token" errors in newer versions of PHP
+# Because the grep exits with error code 0, we have to generate the exit code by parsing the output
+  - phpmd /drone/src text codesize | grep -v "Unexpected token" > /tmp/result
+  - ROWS=`wc -l < /tmp/result`
+  - cat /tmp/result
+  - if [ $ROWS -gt 1 ] ; then exit 1 ; fi
+- name: Unused code
+  image: denisura/phpmd
+  commands:
+# Need to grep out "Unexpected token" errors in newer versions of PHP
+# Because the grep exits with error code 0, we have to generate the exit code by parsing the output
+  - phpmd /drone/src text unusedcode | grep -v "Unexpected token" > /tmp/result
+  - ROWS=`wc -l < /tmp/result`
+  - cat /tmp/result
+  - if [ $ROWS -gt 1 ] ; then exit 1 ; fi
+- name: SOLID Design Rules
+  image: denisura/phpmd
+  commands:
+# Need to grep out "Unexpected token" errors in newer versions of PHP
+# Because the grep exits with error code 0, we have to generate the exit code by parsing the output
+  - phpmd /drone/src text design | grep -v "Unexpected token" > /tmp/result
+  - ROWS=`wc -l < /tmp/result`
+  - cat /tmp/result
+  - if [ $ROWS -gt 1 ] ; then exit 1 ; fi
+- name: Copy paste detection
+  image: rvannauker/phpcpd
+  commands:
+  - phpcpd /drone/src
